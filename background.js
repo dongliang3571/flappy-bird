@@ -14,9 +14,9 @@ function BackgroundObject(image) {
     this.draw = function() {
         context.clearRect(0, 0, canvas_bg.width, canvas_bg.height);
         context.drawImage(this.image.backgroundImage, this.x, this.y, canvas_bg.width, canvas_bg.height);
-        context.drawImage(this.image.backgroundImage, -canvas_bg.width+this.x, this.y, canvas_bg.width, canvas_bg.height);
-        this.x += this.speed;
-        if (this.x >= canvas_bg.width) this.x = 0;
+        context.drawImage(this.image.backgroundImage, canvas_bg.width+this.x, this.y, canvas_bg.width, canvas_bg.height);
+        this.x -= this.speed;
+        if (this.x <= -canvas_bg.width) this.x = 0;
     }
 }
 
