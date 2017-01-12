@@ -72,6 +72,13 @@ function BirdObject(images, birdSize, canvas_fg) {
             }
         }
     };
+    this.die = function() {
+        context_fg.clearRect(0, 0, canvas_fg.width, canvas_fg.height);
+        context_fg.drawImage(this.image, this.x, this.y, birdSize, birdSize);
+        this.vf = this.acceleration*1.0/60 + this.vi;   // forumula: vf = at+vi
+        this.vi = 5;
+        this.y += this.vf;
+    }
 }
 
 // Tube object
@@ -80,11 +87,11 @@ function TubeObject(images, canvas_fg) {
     this.speed = 3;
     this.x = 0;
     this.y = canvas_fg.with/2;
-    this.tubeWidth = 50;
+    this.tubeWidth = 40;
     this.gapHeight = 100;
     this.upTubePosition = canvas_fg.height/2 + Math.random()*120;
     this.downTubePosition = this.upTubePosition - this.gapHeight;
-    this.collisionX = 0;
+    this.collisionX = 10;
     this.collisionY = this.upTubePosition;
     this.draw = function() {
         context_fg.fillStyle = 'red';
@@ -94,6 +101,18 @@ function TubeObject(images, canvas_fg) {
         // context_fg.drawImage(this.image, canvas_fg.width+this.x, this.y, canvas_fg.width, canvas_fg.height);
         this.x -= this.speed;
         this.collisionX = canvas_fg.width+this.x;
+    };
+}
+
+function TextObject(canvas_bg) {
+    this.x = 30;
+    this.y = 30;
+    this.width = 100;
+    this.height = 100;
+    this.draw = function() {
+        context_bg.fillStyle = 'black';
+        context_bg.font = '25pt Arial';
+        context_bg.fillText(`Score: ${score}`, this.x, this.y);
     };
 }
 
@@ -112,6 +131,7 @@ var images = new LoadingImages();
 var bgObject = new BackgroundObject(images, canvas_bg);
 var birdSize = 80;
 var birdObject = new BirdObject(images, birdSize, canvas_fg);
+var textObject = new TextObject(canvas_bg);
 // var tubeObject = new TubeObject(images, canvas_fg);
 
 
@@ -121,9 +141,7 @@ function Position(x, y) {
 }
 
 var tubeObjects = [];
-for (var i = 0; i < 10; i++) {
-
-}
+tubeObjects.push(new TubeObject(images, canvas_fg));
 
 var KEY_CODES = {
     32: 'space'
@@ -142,10 +160,14 @@ function addListeners() {
             KEY_STATUS[KEY_CODES[keyCode]] = true;
         }
     });
+
 }
 
 var count = 0;
 var tubeSize = 50;
+var score = 0;
+var allowScore = true;
+var stopID;
 function start() {
     bgObject.draw();
     birdObject.draw();
@@ -155,25 +177,52 @@ function start() {
         count = 0;
     }
     if (tubeObjects[0].collisionX+tubeSize < birdObject.x) {
-        tubeObjects.splice(0, 1);
+        if (allowScore) {
+            score++;
+            allowScore = false;
+        }
     }
+    if (tubeObjects[0].collisionX+tubeSize+20 < birdObject.x) {
+        tubeObjects.splice(0, 1);
+        allowScore = true;
+    }
+
     for (var i in tubeObjects) {
         tubeObjects[i].draw();
-
-        /////////////////////////////////////////////////////////////
-        // TODO: collision detection
-        if ((tubeObjects[i].collisionX >= birdObject.x &&
-            tubeObjects[i].collisionX+tubeSize <= birdObject.x)
-            &&
-            (tubeObjects[i].collisionY <= birdObject.y+birdSize ||
-             tubeObjects[i].collisionY-100 >= birdObject.y)) {
+        if ((tubeObjects[i].collisionX <= birdObject.x+birdSize-23 &&
+            tubeObjects[i].collisionX >= birdObject.x &&
+            tubeObjects[i].collisionY <= birdObject.y+birdSize-15)
+            ||
+            (tubeObjects[i].collisionX <= birdObject.x+birdSize-23 &&
+            tubeObjects[i].collisionX >= birdObject.x &&
+            tubeObjects[i].collisionY-115 >= birdObject.y)) {
             clearInterval(intervalID);
+            stopID = setInterval(stop, 1000/60);
         }
-        /////////////////////////////////////////////////////////////
+    }
+    textObject.draw();
+}
+
+var newCount = 0;
+function stop() {
+    birdObject.die();
+    newCount++;
+    context_fg.fillStyle = 'red';
+    context_fg.font = '25pt Arial';
+    context_fg.fillText("Refresh page to restart :)", 250, 200);
+    if (newCount >= 100) {
+        clearInterval(stopID);
     }
 }
 
+function restart() {
+    birdObject = new BirdObject(images, birdSize, canvas_fg);
+    textObject = new TextObject(canvas_bg);
+    tubeObjects = [];
+    tubeObjects.push(new TubeObject(images, canvas_fg));
+}
 // add event listener
 addListeners();
+
 
 var intervalID = setInterval(start, 1000/60);
