@@ -6,10 +6,6 @@ function LoadingImages() {
     this.birdImage.src = "assets/bird.png";
     this.tubeImage = new Image();
     this.tubeImage.src = "assets/tube.png";
-    this.bingup = new Image();
-    this.bingup.src = "assets/bingup.png";
-    this.bingdown = new Image();
-    this.bingdown.src = "assets/bingdown.png";
 }
 
 
@@ -49,13 +45,6 @@ function BirdObject(images, birdSize, canvas_fg) {
         this.vf = this.acceleration*1.0/60 + this.vi;   // forumula: vf = at+vi
         this.vi = this.vf;
         this.y += this.vf;
-
-        // change bird images based on speed direction
-        // if (this.vf >= 0) {
-        //     this.image = images.bingdown;
-        // } else {
-        //     this.image = images.bingup;
-        // }
 
         // default jumping up and down when the game first starts, that's `this.start` is false
         if (this.y >= canvas_fg.height/2 && !this.start) {
@@ -97,8 +86,6 @@ function TubeObject(images, canvas_fg) {
         context_fg.fillStyle = 'red';
         context_fg.fillRect(canvas_fg.width+this.x, this.upTubePosition, this.tubeWidth, canvas_fg.height/2);
         context_fg.fillRect(canvas_fg.width+this.x, 0, this.tubeWidth, this.downTubePosition);
-        // context_fg.drawImage(this.image, canvas_fg.width+this.x, 200, 300, -300);
-        // context_fg.drawImage(this.image, canvas_fg.width+this.x, this.y, canvas_fg.width, canvas_fg.height);
         this.x -= this.speed;
         this.collisionX = canvas_fg.width+this.x;
     };
@@ -132,7 +119,6 @@ var bgObject = new BackgroundObject(images, canvas_bg);
 var birdSize = 80;
 var birdObject = new BirdObject(images, birdSize, canvas_fg);
 var textObject = new TextObject(canvas_bg);
-// var tubeObject = new TubeObject(images, canvas_fg);
 
 
 function Position(x, y) {
