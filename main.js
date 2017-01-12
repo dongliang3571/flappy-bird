@@ -147,6 +147,11 @@ function addListeners() {
         }
     });
 
+    document.addEventListener("click", function(e) {
+        e.preventDefault();
+        KEY_STATUS[KEY_CODES[32]] = true;
+    });
+
 }
 
 var count = 0;
