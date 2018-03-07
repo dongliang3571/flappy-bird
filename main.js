@@ -131,12 +131,10 @@ tubeObjects.push(new TubeObject(images, canvas_fg));
 
 var KEY_CODES = {
     32: 'space',
-    13: 'enter',
 }
 
 var KEY_STATUS = {
     'space': false,
-    'enter': false,
 };
 
 // initialization the game
@@ -154,6 +152,10 @@ function addListeners() {
         KEY_STATUS[KEY_CODES[32]] = true;
     });
 
+    document.addEventListener("touchstart", function(e) {
+        e.preventDefault();
+        KEY_STATUS[KEY_CODES[32]] = true;
+    });
 }
 
 var count = 0;
@@ -199,7 +201,7 @@ function start() {
 var intervalID;
 var newCount = 0;
 
-function restart_event(e) {
+function restart_click_event(e) {
     var keyCode = (e.keyCode) ? e.keyCode : e.charCode;
     if (KEY_CODES[keyCode]) {
         e.preventDefault();
@@ -209,18 +211,26 @@ function restart_event(e) {
     }
 }
 
+function restart_touch_event(e) {
+    KEY_STATUS[KEY_CODES[32]] = true;
+    clearInterval(stopID);
+    restart();
+    intervalID = setInterval(start, 1000/60);
+
+}
+
 function stop() {
     birdObject.die();
     newCount++;
     context_fg.fillStyle = 'red';
-    context_fg.font = '25pt Arial';
-    context_fg.fillText("Press Enter key restart :)", 250, 200);
-    if (newCount >= 100) {
+    context_fg.font = '17pt Arial';
+    context_fg.fillText("Press Space or touch the screen to restart :)", 30, 60);
+    if (birdObject.y > canvas_fg.height) {
         clearInterval(stopID);
-
-        // press Enter key to restart
-        document.addEventListener("keydown", restart_event);
     }
+    // press Enter key to restart
+    document.addEventListener("keydown", restart_click_event);
+    document.addEventListener("touchstart", restart_touch_event);
 }
 
 function restart() {
@@ -231,7 +241,8 @@ function restart() {
     tubeObjects.push(new TubeObject(images, canvas_fg));
 
     // remove the listenser preventing multiple restart at the same time
-    document.removeEventListener("keydown", restart_event);
+    document.removeEventListener("keydown", restart_click_event);
+    document.removeEventListener("touchstart", restart_touch_event);
 }
 // add event listener
 addListeners();
