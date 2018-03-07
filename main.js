@@ -130,11 +130,13 @@ var tubeObjects = [];
 tubeObjects.push(new TubeObject(images, canvas_fg));
 
 var KEY_CODES = {
-    32: 'space'
+    32: 'space',
+    13: 'enter',
 }
 
 var KEY_STATUS = {
-    'space': false
+    'space': false,
+    'enter': false,
 };
 
 // initialization the game
@@ -194,26 +196,44 @@ function start() {
     textObject.draw();
 }
 
+var intervalID;
 var newCount = 0;
+
+function restart_event(e) {
+    var keyCode = (e.keyCode) ? e.keyCode : e.charCode;
+    if (KEY_CODES[keyCode]) {
+        e.preventDefault();
+        KEY_STATUS[KEY_CODES[keyCode]] = true;
+        restart();
+        intervalID = setInterval(start, 1000/60);
+    }
+}
+
 function stop() {
     birdObject.die();
     newCount++;
     context_fg.fillStyle = 'red';
     context_fg.font = '25pt Arial';
-    context_fg.fillText("Refresh page to restart :)", 250, 200);
+    context_fg.fillText("Press Enter key restart :)", 250, 200);
     if (newCount >= 100) {
         clearInterval(stopID);
+
+        // press Enter key to restart
+        document.addEventListener("keydown", restart_event);
     }
 }
 
 function restart() {
+    bgObject = new BackgroundObject(images, canvas_bg);
     birdObject = new BirdObject(images, birdSize, canvas_fg);
     textObject = new TextObject(canvas_bg);
     tubeObjects = [];
     tubeObjects.push(new TubeObject(images, canvas_fg));
+
+    // remove the listenser preventing multiple restart at the same time
+    document.removeEventListener("keydown", restart_event);
 }
 // add event listener
 addListeners();
 
-
-var intervalID = setInterval(start, 1000/60);
+intervalID = setInterval(start, 1000/60);
