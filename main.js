@@ -86,10 +86,6 @@ function TubeObject(images, canvas_fg) {
     this.draw = function() {
         context_fg.drawImage(this.image[0], 175, 0, 80, 420, canvas_fg.width+this.x, this.upTubePosition, this.tubeWidth, canvas_fg.height/2);
         context_fg.drawImage(this.image[1], 175, 0, 80, 420, canvas_fg.width+this.x, 0, this.tubeWidth, this.downTubePosition);
-        // context_fg.drawImage(this.image, 175, 0, 80, 420, canvas_fg.width+this.x, 0, this.tubeWidth, this.downTubePosition);
-        // context_fg.fillStyle = 'red';
-        // context_fg.fillRect(canvas_fg.width+this.x, this.upTubePosition, this.tubeWidth, canvas_fg.height/2);
-        // context_fg.fillRect(canvas_fg.width+this.x, 0, this.tubeWidth, this.downTubePosition);`
         this.x -= this.speed;
         this.collisionX = canvas_fg.width+this.x;
     };
