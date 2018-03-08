@@ -6,6 +6,8 @@ function LoadingImages() {
     this.birdImage.src = "assets/bird.png";
     this.tubeImage = new Image();
     this.tubeImage.src = "assets/tube.png";
+    this.tubeDownImage = new Image();
+    this.tubeDownImage.src = "assets/tube_down.png";
 }
 
 
@@ -37,7 +39,6 @@ function BirdObject(images, birdSize, canvas_fg) {
     this.push_speed = -5;   // speed when click is triggered
     this.draw = function() {
         if (!this.alive) {
-            console.log("game over");
             // TODO: dispatch eventListener
         }
         context_fg.clearRect(0, 0, canvas_fg.width, canvas_fg.height);
@@ -72,20 +73,23 @@ function BirdObject(images, birdSize, canvas_fg) {
 
 // Tube object
 function TubeObject(images, canvas_fg) {
-    this.image = images.tubeImage;
+    this.image = [images.tubeImage, images.tubeDownImage];
     this.speed = 3;
     this.x = 0;
     this.y = canvas_fg.with/2;
-    this.tubeWidth = 40;
+    this.tubeWidth = 50;
     this.gapHeight = 100;
     this.upTubePosition = canvas_fg.height/2 + Math.random()*120;
     this.downTubePosition = this.upTubePosition - this.gapHeight;
     this.collisionX = 10;
     this.collisionY = this.upTubePosition;
     this.draw = function() {
-        context_fg.fillStyle = 'red';
-        context_fg.fillRect(canvas_fg.width+this.x, this.upTubePosition, this.tubeWidth, canvas_fg.height/2);
-        context_fg.fillRect(canvas_fg.width+this.x, 0, this.tubeWidth, this.downTubePosition);
+        context_fg.drawImage(this.image[0], 175, 0, 80, 420, canvas_fg.width+this.x, this.upTubePosition, this.tubeWidth, canvas_fg.height/2);
+        context_fg.drawImage(this.image[1], 175, 0, 80, 420, canvas_fg.width+this.x, 0, this.tubeWidth, this.downTubePosition);
+        // context_fg.drawImage(this.image, 175, 0, 80, 420, canvas_fg.width+this.x, 0, this.tubeWidth, this.downTubePosition);
+        // context_fg.fillStyle = 'red';
+        // context_fg.fillRect(canvas_fg.width+this.x, this.upTubePosition, this.tubeWidth, canvas_fg.height/2);
+        // context_fg.fillRect(canvas_fg.width+this.x, 0, this.tubeWidth, this.downTubePosition);`
         this.x -= this.speed;
         this.collisionX = canvas_fg.width+this.x;
     };
@@ -204,6 +208,7 @@ var newCount = 0;
 function restart_click_event(e) {
     var keyCode = (e.keyCode) ? e.keyCode : e.charCode;
     if (KEY_CODES[keyCode]) {
+        clearInterval(stopID);
         e.preventDefault();
         KEY_STATUS[KEY_CODES[keyCode]] = true;
         restart();
