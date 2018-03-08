@@ -47,7 +47,7 @@ function BirdObject(images, birdSize, canvas_fg) {
         this.vi = this.vf;
         this.y += this.vf;
 
-        // default jumping up and down when the game first starts, that's `this.start` is false
+        // default jumping up and down when the game first starts, that is when this.start is false
         if (this.y >= canvas_fg.height/2 && !this.start) {
             this.vi = this.push_speed;
         } else {
@@ -205,19 +205,15 @@ function restart_click_event(e) {
     var keyCode = (e.keyCode) ? e.keyCode : e.charCode;
     if (KEY_CODES[keyCode]) {
         clearInterval(stopID);
-        e.preventDefault();
-        KEY_STATUS[KEY_CODES[keyCode]] = true;
         restart();
         intervalID = setInterval(start, 1000/60);
     }
 }
 
 function restart_touch_event(e) {
-    KEY_STATUS[KEY_CODES[32]] = true;
     clearInterval(stopID);
     restart();
     intervalID = setInterval(start, 1000/60);
-
 }
 
 function stop() {
@@ -245,6 +241,7 @@ function restart() {
     // remove the listenser preventing multiple restart at the same time
     document.removeEventListener("keydown", restart_click_event);
     document.removeEventListener("touchstart", restart_touch_event);
+    KEY_STATUS["space"] = false;
 }
 // add event listener
 addListeners();
