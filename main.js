@@ -235,6 +235,7 @@ function stop() {
 }
 
 function restart() {
+    score = 0;
     bgObject = new BackgroundObject(images, canvas_bg);
     birdObject = new BirdObject(images, birdSize, canvas_fg);
     textObject = new TextObject(canvas_bg);
