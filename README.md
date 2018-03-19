@@ -6,3 +6,10 @@ How to play
 ===========
 
 Jump: **Space** key
+
+TODO:
+=====
+
+1. Make it a multiplayer game
+2. able to name character
+3. able to select character
